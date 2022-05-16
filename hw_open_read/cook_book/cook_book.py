@@ -1,4 +1,5 @@
 import os
+from platform import python_version_tuple
 
 FILENAME = os.path.join(os.getcwd() + '/recipes.txt')
 
@@ -29,3 +30,7 @@ def get_shop_list_by_dishes(dishes, person_count, cook_book):
                 shop_dict[ingredient_name] = dict(quantity = quantity * person_count, measure = measure)
     for key in shop_dict.keys():
         print(f'{key}: {shop_dict[key]}')
+
+dishes = ['Омлет', 'Утка по-пекински', 'Запеченный картофель', 'Фахитос']
+person_count = int(input('Количесвто гостей?: '))
+get_shop_list_by_dishes(dishes, person_count, get_cook_dict(FILENAME))
