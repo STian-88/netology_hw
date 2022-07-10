@@ -1,6 +1,7 @@
 create table if not exists ganre(
 id serial primary key,
-name varchar(266)
+name varchar(266),
+description text
 );
 
 create table if not exists artist(
