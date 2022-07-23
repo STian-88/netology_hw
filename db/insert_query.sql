@@ -1,5 +1,5 @@
-insert into country (name)
-values ('Австралия'), ('Австрия'), ('Азербайджан'), ('Албания'), ('Алжир'), ... ;
+INSERT INTO country (name)
+VALUES ('Австралия'), ('Австрия'), ('Азербайджан'), ('Албания'), ('Алжир'), ... ;
 ;
 
 insert into ganre(name)
@@ -35,7 +35,6 @@ values ('3', '17'),
 ('4', '14'),
 ('5', '15'), ... 
 ;
-
 
 insert into artists_tracks (artist_id, track_id)
 values('3', '2'), ('3', '3'),
