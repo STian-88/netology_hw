@@ -264,9 +264,9 @@ def get_choice():
     choice = int(input('Введите номер(1-7): '))
     while 7 < choice < 1:
         choice = int(input('Введите номер(1-7): '))
+    print()
     return choice
     
-
 def main():
     choice = 0
     while choice != 7:
@@ -288,3 +288,4 @@ def main():
     
 if __name__ == '__main__':
     main()
+    
