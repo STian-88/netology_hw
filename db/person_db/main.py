@@ -88,6 +88,7 @@ def add_person():
                 INSERT INTO person(first_name, last_name, email)
                 VALUES (%s, %s, %s);
                 """, (first_name, last_name, email))
+    input('Запись добавлена!')
 
 def add_phone():
     person_id = find_person_id()
@@ -101,6 +102,8 @@ def add_phone():
                     """,
                     (phone, person_id)
                 )
+    input('Номер телефона записан!')
+
 def change_info():
     person_id = find_person_id()
     new_person_info = get_person_info()
@@ -148,8 +151,10 @@ def change_info():
                         """, (new_person_info[3], person_id)
                 )
         conn.commit()
+    input('Данные изменены!')
 
-def show_person_info(person_id:str):
+def show_person_info():
+    person_id = find_person_id()
     with psycopg2.connect(database='person_info', user='postgres', password='postgres') as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -166,15 +171,19 @@ def show_person_info(person_id:str):
         print(f'Фамилия: {first_name}\n'
               f'Имя: {last_name}\n'
               f'Email: {email}')
+    phones_list = show_person_phones(person_id)
+    for phone in phones_list:
+        print(phone)
+    input()
 
-def show_person_phones(person_id:str):
+def show_person_phones(person_id):
     with psycopg2.connect(database='person_info', user='postgres', password='postgres') as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
                     SELECT * FROM phone WHERE fk_person_id = %s
                     """, 
-                    (person_id)
+                    (person_id,)
                 )
                 res = cur.fetchall()
     phones_list= []
@@ -198,6 +207,7 @@ def delete_person():
                 WHERE person_id = %s
                 """, (person_id)
             )
+    input('Нет человека - нет проблем!)')
 
 def delete_phone():
     person_id = find_person_id()
@@ -228,8 +238,6 @@ def delete_phone():
                 )
     else:
         ch = phones[choice-1][0]
-        print(type(ch))
-        print(ch)
         with psycopg2.connect(database='person_info', user='postgres', password='postgres') as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -238,6 +246,7 @@ def delete_phone():
                     WHERE phone.number = %s
                     """, (ch,)
                 )
+    input('"Жили как-то без телефонов и ничо"')
 
 def get_choice():
     print(
@@ -248,29 +257,34 @@ def get_choice():
         3 --> Изменить запись
         4 --> Удалить запись
         5 --> Удалить номера телефона
-        6 --> Выйти
+        6 --> Найти запись
+        7 --> Выйти
         """
     )
-    choice = int(input('Введите номер(1-5): '))
-    while 6 < choice < 1:
-        choice = int(input('Введите номер(1-5): '))
+    choice = int(input('Введите номер(1-7): '))
+    while 7 < choice < 1:
+        choice = int(input('Введите номер(1-7): '))
     return choice
     
 
 def main():
-    choice = get_choice()
-    if choice == 1:
-        add_person()
-    if choice == 2:
-        add_phone()
-    if choice == 3:
-        change_info()
-    if choice == 4:
-        delete_person()
-    if choice == 5:
-        delete_phone()
-    if choice == 6:
-        print('Пока')
+    choice = 0
+    while choice != 7:
+        choice = get_choice()
+        if choice == 1:
+            add_person()
+        if choice == 2:
+            add_phone()
+        if choice == 3:
+            change_info()
+        if choice == 4:
+            delete_person()
+        if choice == 5:
+            delete_phone()
+        if choice == 6:
+            show_person_info()
+        if choice == 7:
+            print('Пока')
     
 if __name__ == '__main__':
     main()
