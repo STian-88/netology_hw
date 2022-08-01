@@ -1,5 +1,5 @@
-from fileinput import filename
 import json
+from socket import PACKET_BROADCAST
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 
@@ -22,7 +22,7 @@ def get_dsn():
     return f'{dialect}://{user_login}:{user_password}@{host}:{port}/{dbname}'
 
 def get_json_test_data():
-    filename = '/home/stian88/main_docs/projects/netology_hw/db/hw_orm/test_data.json'
+    filename = 'hw_db/hw_orm/test_data.json'
     with open(filename) as infile:
         json_data = json.load(infile)
     return json_data
@@ -37,25 +37,21 @@ def main():
     for item in data:
         model = {
             'publisher': Publisher,
+            'shop': Shop,
             'book': Book,
             'stock': Stock,
-            'shop': Shop,
-            'sale': Sale
-        }[item.get('model')]
-        session.add(model(**item.get('fields')))
-        session.commit()
+            'sale': Sale,}[item.get('model')]
+        session.add(model(id=item.get('pk'), **item.get('fields')))
+    session.commit()
 
-    find_name = input('Введите искомое: ')
-    for record in session.query(Book).filter(Book.book_title.like(f'%{find_name}%')).all():
-        print(record)
-
-    subq = session.query(Book).filter(Book.book_title.like(f'%{find_name}%')).subquery()
-    for item in session.query(Publisher).join(subq, subq.c.fk_publisher_id == Publisher.publisher_id).all():
+    user_input = input('Введите искомое: ')
+    subq_1 = session.query(Publisher).filter(Publisher.name.like(f'%{user_input}%')).subquery()
+    subq_2 = session.query(Book).join(subq_1, subq_1.c.id == Book.fk_publisher_id).subquery()
+    subq_3 = session.query(Stock).join(subq_2, subq_2.c.id == Stock.fk_book_id).subquery()
+    for item in session.query(Shop).join(subq_3, subq_3.c.fk_shop_id == Shop.id).all():
         print(item)
 
     session.close()
 
 if __name__  == '__main__':
     main()
-
-
